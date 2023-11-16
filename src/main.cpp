@@ -1,5 +1,5 @@
 #include "../include/inputs.h"
-#include "../include/poblacion.h"
+#include "../include/algoritmo.h"
 using namespace std;
 
 int main(int argc, char* argv[]) {
@@ -41,20 +41,29 @@ int main(int argc, char* argv[]) {
     // -------------------------------------------------------------------------------------
     // Generar población inicial
 
-    int k = 5; // Cantidad de cromosomas en la población
+    int k = 500; // PARÁMETRO: Cantidad de cromosomas en la población
     vector<Cromosoma> poblacion(k);
-
-    // -------------------------------------------------------------------------------------
-
-    int v_max = 10;
+    int v_max = 100;
 
     generar_poblacion(poblacion, matriz_costos, k, v_max, n_clientes, n_estaciones);
-    evaluacion_cromosoma(poblacion[0], matriz_costos, n_estaciones, d_max, t_max, vel, t_srv, t_rcg);
-    // evaluacion_poblacion(poblacion, k, n_estaciones, matriz_costos, d_max, t_max, vel, t_srv, t_rcg);
-    caminos_finales(poblacion[0], n_estaciones, matriz_costos, vel, t_srv, t_rcg, d_max, t0, n_clientes);
-    // cout << "t_max: " << poblacion[0].v << "\n";
+    evaluacion_poblacion(poblacion, k, n_estaciones, matriz_costos, d_max, t_max, vel, t_srv, t_rcg);
+    
+    // -------------------------------------------------------------------------------------
 
+    float prob_mutacion = 0.2;
+    for (int i = 0; i < stoi(argv[2]); i++)
+    {
+        main_algoritmo(poblacion, matriz_costos, k, n_estaciones, n_clientes, 
+                    prob_mutacion, d_max, t_max, vel, t_srv, t_rcg);
+    }
 
+    int indiceMenor = 0;
+    for (int i = 0; i < k; i++) {
+        if (poblacion[i].evaluacion < poblacion[indiceMenor].evaluacion) {
+            indiceMenor = i;
+        }
+    }
+    caminos_finales(poblacion[indiceMenor], n_estaciones, matriz_costos, vel, t_srv, t_rcg, d_max, t0, n_clientes);
 
     return 0;      
 } 

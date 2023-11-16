@@ -208,7 +208,7 @@ void evaluacion_cromosoma(Cromosoma &crom_entero, vector<vector<float>> &matriz_
         {
             if (d_recorrida > d_max)
             {
-                valor += (d_recorrida - d_max);
+                valor += (d_recorrida - d_max) * 100000;
             }
             d_recorrida = 0;
         }
@@ -218,7 +218,7 @@ void evaluacion_cromosoma(Cromosoma &crom_entero, vector<vector<float>> &matriz_
         {
             if (t_tomado > t_max)
             {
-                valor += (t_tomado - t_max);
+                valor += (t_tomado - t_max) * 100000;
             }
             t_tomado = 0;
         }
@@ -259,10 +259,6 @@ void evaluacion_poblacion(vector<Cromosoma> &poblacion, int k, int m, vector<vec
     for (int i = 0; i < k; i++)
     {
         evaluacion_cromosoma(poblacion[i], matriz_costos, m, d_max, t_max, vel, t_srv, t_rcg);
-        
-        // Debug
-        // cout << "v: " << poblacion[i].v << "\n";
-        // cout << "evaluacion: " << poblacion[i].evaluacion << "\n\n";
     }   
 }
 
@@ -292,6 +288,10 @@ void caminos_finales(Cromosoma &crom_entero, int m, vector<vector<float>> &matri
     int vehiculos = 0;
     
     vector<int> camino;
+
+    // For debug
+    // for (auto i: ruta) cout << i << ' ';
+    // cout << "\n\n";
 
     for (size_t i = 0; i < ruta.size() - 1; i++)
     {
