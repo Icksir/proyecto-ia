@@ -38,4 +38,4 @@ clean:
 	rm -rf $(BUILDDIR) $(TARGET)
 
 example:
-	./GVRP instances/AB107.dat 1000
+	./GVRP instances/AB101.dat 1000

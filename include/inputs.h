@@ -3,6 +3,7 @@
 #include <vector>
 #include <cmath>
 #include <sstream>
+#include <ctime> 
 using namespace std;
 
 vector<string> obtain_first_line(string file);

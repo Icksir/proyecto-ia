@@ -183,14 +183,15 @@ vector<vector<float>> matriz_costos
 int m
 */
 void evaluacion_cromosoma(Cromosoma &crom_entero, vector<vector<float>> &matriz_costos, 
-                            int m, int d_max, int t_max, int vel, int t_srv, int t_rcg){
-    int valor = 0;
-    int d_recorrida = 0;
+                            int m, int d_max, int t_max, float vel, int t_srv, int t_rcg){
+    float valor = 0;
+    float d_recorrida = 0;
     int t_tomado = 0;
     vector<int> ruta = generar_camino(crom_entero, m);    
 
-    for (auto i: ruta) cout << i << ' ';
-    cout << "\n\n";
+    // For debug
+    // for (auto i: ruta) cout << i << ' ';
+    // cout << "\n\n";
 
     for (size_t i = 0; i < ruta.size() - 1; i++)
     {   
@@ -217,7 +218,7 @@ void evaluacion_cromosoma(Cromosoma &crom_entero, vector<vector<float>> &matriz_
         {
             if (t_tomado > t_max)
             {
-                valor += (t_tomado - t_max) * 20;
+                valor += (t_tomado - t_max);
             }
             t_tomado = 0;
         }
@@ -254,13 +255,109 @@ int k: cantidad de cromosomas
 int m: cantidad de estaciones
 */
 void evaluacion_poblacion(vector<Cromosoma> &poblacion, int k, int m, vector<vector<float>> &matriz_costos, 
-                            int d_max, int t_max, int vel, int t_srv, int t_rcg){
+                            int d_max, int t_max, float vel, int t_srv, int t_rcg){
     for (int i = 0; i < k; i++)
     {
         evaluacion_cromosoma(poblacion[i], matriz_costos, m, d_max, t_max, vel, t_srv, t_rcg);
         
         // Debug
-        cout << "v: " << poblacion[i].v << "\n";
-        cout << "evaluacion: " << poblacion[i].evaluacion << "\n\n";
+        // cout << "v: " << poblacion[i].v << "\n";
+        // cout << "evaluacion: " << poblacion[i].evaluacion << "\n\n";
     }   
+}
+
+/*
+caminos_finales: Genera caminos para printearlos por consola
+---------------------------------------------------------
+Cromosoma &mejor_evaluado: cromosoma mejor evaluado
+int m: cantidad de estaciones
+vector<vector<float>> &matriz_costos: matriz de costos
+float vel: velocidad de los vehículos
+int t_srv: tiempo de servicio a los clientes
+int t_rcg: tiempo de recarga
+int d_max: distancia máxima 
+unsigned t0: tiempo para calcular tiempo de ejecución
+int n: cantidad de clientes
+*/
+void caminos_finales(Cromosoma &crom_entero, int m, vector<vector<float>> &matriz_costos,
+                    float vel, int t_srv, int t_rcg, int d_max, unsigned t0, int n){
+    vector<int> ruta = generar_camino(crom_entero, m);  
+
+    float distancia = 0;
+    float distancia_total = 0;
+    int tiempo_total = 0;
+    float distancia_excedida = 0;
+    float distancia_dmax = 0;
+    float distancia_excedida_total = 0;
+    int vehiculos = 0;
+    
+    vector<int> camino;
+
+    for (size_t i = 0; i < ruta.size() - 1; i++)
+    {
+        camino.insert(camino.end(), ruta[i+1]);
+        if (ruta[i+1] == 0)
+        {
+            camino.insert(camino.begin(), 0);
+            vehiculos++;
+
+            // Calcular tiempo y distancia 
+            for (size_t j = 0; j < camino.size() - 1; j++)
+            {
+                distancia += matriz_costos[camino[j]][camino[j+1]];      
+            }        
+            camino.clear();
+            distancia_total += distancia;
+            distancia = 0;
+            tiempo_total = 0;
+            distancia_excedida = 0;
+            distancia_excedida_total = 0;
+        }
+    }
+
+    unsigned t1 = clock();
+    double time = (double(t1-t0)/CLOCKS_PER_SEC);
+
+    cout << distancia_total << " " << n << " " << vehiculos << " " << time << "\n\n";
+
+    for (size_t i = 0; i < ruta.size() - 1; i++)
+    {
+        camino.insert(camino.end(), ruta[i+1]);
+        if (ruta[i+1] == 0)
+        {
+            camino.insert(camino.begin(), 0);
+            for (size_t j = 0; j < camino.size() - 1; j++)
+            {
+                if (camino[j] < m && camino[j] != 0) cout << "F" << camino[j] << "-";
+                else if (camino[j] > m - 1) cout << "C" << camino[j] - m + 1 << "-";
+                else if (camino[j] == 0) cout << "D0-";
+            }
+            cout << "D0 ";
+
+            // Calcular tiempo y distancia 
+            for (size_t j = 0; j < camino.size() - 1; j++)
+            {
+                distancia += matriz_costos[camino[j]][camino[j+1]];
+                distancia_dmax += matriz_costos[camino[j]][camino[j+1]];
+                tiempo_total += matriz_costos[camino[j]][camino[j+1]] * vel;
+                if (camino[j] < m && camino[j] != 0) tiempo_total += t_rcg;
+                else if (camino[j] > m - 1) tiempo_total += t_srv;
+
+                if (distancia_dmax > d_max) distancia_excedida = distancia_dmax - d_max;
+                if (camino[j+1] < m)
+                {
+                    distancia_excedida_total += distancia_excedida;
+                    distancia_dmax = 0;
+                    distancia_excedida = 0;
+                }                
+            }        
+            cout << distancia << " " << tiempo_total << " " << distancia_excedida_total;
+            cout << "\n\n";
+            camino.clear();
+            distancia = 0;
+            tiempo_total = 0;
+            distancia_excedida = 0;
+            distancia_excedida_total = 0;
+        }
+    }
 }

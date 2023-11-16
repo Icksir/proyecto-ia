@@ -4,6 +4,10 @@ using namespace std;
 
 int main(int argc, char* argv[]) {
 
+    unsigned t0;
+ 
+    t0=clock();
+
     // -------------------------------------------------------------------------------------
     // Lectura de primeros datos
 
@@ -41,20 +45,16 @@ int main(int argc, char* argv[]) {
     vector<Cromosoma> poblacion(k);
 
     // -------------------------------------------------------------------------------------
-    /*
-    1. Generar cantidad de vehiculos de forma aleatoria dado vehiculo máx
-    2. generar clientes y guardar indices
-    3. comprobar que no hayan dos nodos 0 seguidos
-    4. generar estaciones
-    5. evaluarla 
-    */
 
     int v_max = 10;
 
     generar_poblacion(poblacion, matriz_costos, k, v_max, n_clientes, n_estaciones);
-    evaluacion_poblacion(poblacion, k, n_estaciones, matriz_costos, d_max, t_max, vel, t_srv, t_rcg);
+    evaluacion_cromosoma(poblacion[0], matriz_costos, n_estaciones, d_max, t_max, vel, t_srv, t_rcg);
+    // evaluacion_poblacion(poblacion, k, n_estaciones, matriz_costos, d_max, t_max, vel, t_srv, t_rcg);
+    caminos_finales(poblacion[0], n_estaciones, matriz_costos, vel, t_srv, t_rcg, d_max, t0, n_clientes);
+    // cout << "t_max: " << poblacion[0].v << "\n";
 
-    cout << "t_max: " << t_max << "\n";
+
 
     return 0;      
 } 
