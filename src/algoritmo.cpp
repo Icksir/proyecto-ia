@@ -86,6 +86,15 @@ void mutacion_swap(Cromosoma &cromosoma, int m, int n){
     swap(cromosoma.clientes[indice1], cromosoma.clientes[indice2]);
 }
 
+void mutacion_afs(Cromosoma &cromosoma, int m, int n){
+    int estacion_aleatoria = index(0, m-1);
+    int size = cromosoma.estaciones.size();
+    int index_aleatorio = index(0, size-2);
+
+    while (cromosoma.estaciones[index_aleatorio] == -2) index_aleatorio = index(0, size-2);
+    cromosoma.estaciones[index_aleatorio] = estacion_aleatoria;    
+}
+
 void main_algoritmo(vector<Cromosoma> &poblacion, vector<vector<float>> &matriz_costos, 
                 int k, int m, int n, float prob_mutacion, int d_max, int t_max, float vel, 
                 int t_srv, int t_rcg){
@@ -111,8 +120,11 @@ void main_algoritmo(vector<Cromosoma> &poblacion, vector<vector<float>> &matriz_
     Cromosoma temporal = poblacion[index_elegido];
     temporal.clientes = hijo_elegido;
 
-    //TODO: Añadir más mutaciones y pensar cómo cambiar AFS
-    if (random_number() < prob_mutacion) mutacion_swap(temporal, m, n);
+    aleatorio = index(0,1);
+    if (random_number() < prob_mutacion) {
+        if (aleatorio == 0) mutacion_swap(temporal, m, n);
+        else mutacion_afs(temporal, m, n);
+    }
 
     evaluacion_cromosoma(temporal, matriz_costos, m, d_max, t_max, vel, t_srv, t_rcg);
 

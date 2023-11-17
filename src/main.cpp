@@ -3,14 +3,10 @@
 using namespace std;
 
 int main(int argc, char* argv[]) {
-
     unsigned t0;
- 
     t0=clock();
 
-    // -------------------------------------------------------------------------------------
-    // Lectura de primeros datos
-
+    // Lectura de primeros datos ///////////////////
     vector<string> first_line;
     first_line = obtain_first_line(argv[1]);
     
@@ -26,31 +22,28 @@ int main(int argc, char* argv[]) {
     vel = stof(first_line[5]);
     t_srv = stoi(first_line[6]);
     t_rcg = stoi(first_line[7]);
-
-    // -------------------------------------------------------------------------------------
-    // Lectura de nodos
-
+    ///////////////////////////////////////////////
+    
+    // MATRIZ DE COSTOS ///////////////////////////
     int n = n_clientes + n_estaciones; // Tamaño de la matriz cuadrada
     vector<vector<float>> matriz_costos(n, vector<float>(n, 0));
     rellenar_matriz(matriz_costos, n, argv[1]);
-    
-    // Print de matriz de costos
+    ///////////////////////////////////////////////
 
-    // print_matriz(matriz_costos, n); // Ejecución debug para visualizar matriz de costos
-
-    // -------------------------------------------------------------------------------------
-    // Generar población inicial
-
-    int k = 500; // PARÁMETRO: Cantidad de cromosomas en la población
-    vector<Cromosoma> poblacion(k);
+    // PARÁMETROS /////////////////////////////////
+    int k = 1000;     
     int v_max = 100;
-
-    generar_poblacion(poblacion, matriz_costos, k, v_max, n_clientes, n_estaciones);
-    evaluacion_poblacion(poblacion, k, n_estaciones, matriz_costos, d_max, t_max, vel, t_srv, t_rcg);
-    
-    // -------------------------------------------------------------------------------------
-
+    float prob_estaciones = 0.40;
     float prob_mutacion = 0.2;
+    ///////////////////////////////////////////////
+
+    // POBLACIÓN INICIAL //////////////////////////
+    vector<Cromosoma> poblacion(k);
+    generar_poblacion(poblacion, matriz_costos, k, v_max, n_clientes, n_estaciones, prob_estaciones);
+    evaluacion_poblacion(poblacion, k, n_estaciones, matriz_costos, d_max, t_max, vel, t_srv, t_rcg);
+    ///////////////////////////////////////////////
+    
+    // ALGORITMO PRINCIPAL ////////////////////////
     for (int i = 0; i < stoi(argv[2]); i++)
     {
         main_algoritmo(poblacion, matriz_costos, k, n_estaciones, n_clientes, 
@@ -64,6 +57,7 @@ int main(int argc, char* argv[]) {
         }
     }
     caminos_finales(poblacion[indiceMenor], n_estaciones, matriz_costos, vel, t_srv, t_rcg, d_max, t0, n_clientes);
+    ///////////////////////////////////////////////
 
     return 0;      
 } 

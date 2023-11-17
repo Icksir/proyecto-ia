@@ -102,7 +102,7 @@ Cromosoma &crom_entero: cromosoma
 int v: cantidad de vehiculos
 int n: cantidad de clientes
 */
-void generar_estaciones(Cromosoma &crom_entero, int n, int m){
+void generar_estaciones(Cromosoma &crom_entero, int n, int m, float prob_estaciones){
     
     // Inicializa cromosoma e inhabilita zonas prohibidas
     int v = crom_entero.v;
@@ -119,7 +119,7 @@ void generar_estaciones(Cromosoma &crom_entero, int n, int m){
     // Rellenar con estaciones de servicio aleatorias con 0.3 de probabilidad
     for (int i = 0; i < n + v; i++)
     {
-        if (random_number() < 0.33 && crom[i] != -2)
+        if (random_number() < 0.45 && crom[i] != -2)
         {
             crom[i] = index(0, m);
         }
@@ -208,7 +208,7 @@ void evaluacion_cromosoma(Cromosoma &crom_entero, vector<vector<float>> &matriz_
         {
             if (d_recorrida > d_max)
             {
-                valor += (d_recorrida - d_max) * 100000;
+                valor += (d_recorrida - d_max) * 100;
             }
             d_recorrida = 0;
         }
@@ -218,7 +218,7 @@ void evaluacion_cromosoma(Cromosoma &crom_entero, vector<vector<float>> &matriz_
         {
             if (t_tomado > t_max)
             {
-                valor += (t_tomado - t_max) * 100000;
+                valor += (t_tomado - t_max) * 100;
             }
             t_tomado = 0;
         }
@@ -235,14 +235,14 @@ int v_max: cantidad de vehiculos máximos a generar
 int n: cantidad de clientes
 int m: cantidad de estaciones
 */
-void generar_poblacion(vector<Cromosoma> &poblacion, vector<vector<float>> &matriz_costos, int k, int v_max, int n, int m){
+void generar_poblacion(vector<Cromosoma> &poblacion, vector<vector<float>> &matriz_costos, int k, int v_max, int n, int m, float prob_estaciones){
     int v;
     for (int i = 0; i < k; i++)
     {
         v = index(3, v_max);
         poblacion[i].v = v;
         generar_cliente(poblacion[i], n);
-        generar_estaciones(poblacion[i], n, m);
+        generar_estaciones(poblacion[i], n, m, prob_estaciones);
         if (es_invalido(poblacion[i])) i--;
     }
 }

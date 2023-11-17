@@ -19,9 +19,9 @@ struct Cromosoma {
 vector<int> permutacion(vector<int> cromosoma);
 void generar_cliente(Cromosoma &crom_entero, int n);
 int index(int inf, int sup);
-void generar_estaciones(Cromosoma &crom_entero, int n, int m);
+void generar_estaciones(Cromosoma &crom_entero, int n, int m, float prob_estaciones);
 float random_number();
-void generar_poblacion(vector<Cromosoma> &poblacion, vector<vector<float>> &matriz_costos, int k, int v_max, int n, int m);
+void generar_poblacion(vector<Cromosoma> &poblacion, vector<vector<float>> &matriz_costos, int k, int v_max, int n, int m, float prob_estaciones);
 bool es_invalido(Cromosoma crom_entero);
 vector<int> generar_camino(Cromosoma &crom_entero, int m);
 void evaluacion_cromosoma(Cromosoma &crom_entero, vector<vector<float>> &matriz_costos, int m, int d_max, int t_max, float vel, int t_srv, int t_rcg);
