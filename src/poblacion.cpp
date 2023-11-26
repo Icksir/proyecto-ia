@@ -78,9 +78,6 @@ void generar_cliente(Cromosoma &crom_entero, int n){
 
     crom_entero.clientes = crom;
     crom_entero.indices = indexes;
-    
-    // For debug
-    // for (auto i: crom) cout << i << ' ';
 }
 
 /*
@@ -126,9 +123,6 @@ void generar_estaciones(Cromosoma &crom_entero, int n, int m, float prob_estacio
     }
 
     crom_entero.estaciones = crom;
-
-    // For debug
-    // for (auto i: crom) cout << i << ' ';
 }
 
 /*
@@ -169,9 +163,6 @@ vector<int> generar_camino(Cromosoma &crom_entero, int m){
             else {ruta.insert(ruta.end(),crom_entero.clientes[i+1] + m - 1);}
         }
     }
-    // For debug
-    // for (auto i: ruta) cout << i << ' ';
-    // cout << "\n\n";
     return ruta;
 }
 
@@ -288,10 +279,6 @@ void caminos_finales(Cromosoma &crom_entero, int m, vector<vector<float>> &matri
     int vehiculos = 0;
     
     vector<int> camino;
-
-    // For debug
-    // for (auto i: ruta) cout << i << ' ';
-    // cout << "\n\n";
 
     for (size_t i = 0; i < ruta.size() - 1; i++)
     {

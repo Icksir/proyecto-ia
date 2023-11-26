@@ -1,6 +1,12 @@
 #include "../include/algoritmo.h" 
 using namespace std;
 
+/*
+obtener_indices: obtiene todos los puntos donde hayan depósitos en una ruta (nodo 0)
+--------------------------------------------------------- 
+Cromosoma &cromosoma
+int m: cantidad de estaciones de servicio
+*/
 void obtener_indices(Cromosoma &cromosoma, int m){    
     vector<int> indexes;
     for (size_t i = 0; i < cromosoma.clientes.size(); i++)
@@ -10,6 +16,11 @@ void obtener_indices(Cromosoma &cromosoma, int m){
     cromosoma.indices = indexes;
 }
 
+/*
+crossover_points: obtiene dos puntos i y j para mantener información genética en un padre
+--------------------------------------------------------- 
+vector<int> indices: posición de los depósitos en la ruta entregada
+*/
 vector<int> crossover_points(vector<int> indices){
     random_device rd;
     mt19937 generador(rd());
@@ -21,6 +32,13 @@ vector<int> crossover_points(vector<int> indices){
     return puntos;
 }
 
+/*
+crossover: genera una mezcla genética entre dos padres mediante orden crossover
+--------------------------------------------------------- 
+Cromosoma &padre1: cromosoma
+Cromosoma &padre2: cromosoma
+int m: cantidad de estaciones de recarga
+*/
 pair<vector<int>, vector<int>> crossover(Cromosoma &padre1, Cromosoma &padre2, int m){
     int size1 = padre1.clientes.size();
     int size2 = padre2.clientes.size();
@@ -74,6 +92,13 @@ pair<vector<int>, vector<int>> crossover(Cromosoma &padre1, Cromosoma &padre2, i
     return make_pair(hijo1, hijo2);
 }
 
+/*
+mutacion_swap: genera un swap entre dos nodos aleatoriamente como mutación
+--------------------------------------------------------- 
+Cromosoma &cromosoma: cromosoma
+int m: cantidad de estaciones de recarga
+int n: cantidad de clientes
+*/
 void mutacion_swap(Cromosoma &cromosoma, int m, int n){
     obtener_indices(cromosoma, m);
     int size = cromosoma.indices.size();
@@ -86,6 +111,13 @@ void mutacion_swap(Cromosoma &cromosoma, int m, int n){
     swap(cromosoma.clientes[indice1], cromosoma.clientes[indice2]);
 }
 
+/*
+mutacion_afs: genera una estación de servicio aleatoriamente como mutación
+--------------------------------------------------------- 
+Cromosoma &cromosoma: cromosoma
+int m: cantidad de estaciones de recarga
+int n: cantidad de clientes
+*/
 void mutacion_afs(Cromosoma &cromosoma, int m, int n){
     int estacion_aleatoria = index(0, m-1);
     int size = cromosoma.estaciones.size();
@@ -95,6 +127,21 @@ void mutacion_afs(Cromosoma &cromosoma, int m, int n){
     cromosoma.estaciones[index_aleatorio] = estacion_aleatoria;    
 }
 
+/*
+main_algoritmo: realiza el algoritmo planteado
+--------------------------------------------------------- 
+vector<Cromosoma> &poblacion: población
+vector<vector<float>> &matriz_costos: matriz de costos
+int k: número de cromosomas
+int m: número de estaciones de recarga
+int n: número de clientes
+float prob_mutacion: probabilidad de mutación
+int d_max: distancia máxima permitida
+int t_max: tiempo máximo permitido
+float vel: velocidad de los vehículos
+int t_srv: tiempo de servicio
+int t_rcg: tiempo de recarga
+*/
 void main_algoritmo(vector<Cromosoma> &poblacion, vector<vector<float>> &matriz_costos, 
                 int k, int m, int n, float prob_mutacion, int d_max, int t_max, float vel, 
                 int t_srv, int t_rcg){
@@ -141,13 +188,3 @@ void main_algoritmo(vector<Cromosoma> &poblacion, vector<vector<float>> &matriz_
         poblacion[indiceMayor] = temporal;
     }
 }
-
-/*
-void marcoco(int kpop, int :3){
-    if (:3 === true)
-    {
-        :3.stay();
-        keep.:3();
-    }
-}
-*/ 
